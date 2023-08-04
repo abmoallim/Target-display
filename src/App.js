@@ -22,9 +22,13 @@ function App() {
     fetchVideos();
   }, []);
 
-  const handleVideoEnd = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % videos.length);
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % videos.length);
+    }, videos.length > 0 ? 60000 : 0); // 60 seconds if there are videos, 0 otherwise
+
+    return () => clearInterval(interval);
+  }, [videos]);
 
   return (
     <div className="app">
@@ -37,7 +41,7 @@ function App() {
           controls={false}
           width="100%"
           height="100%"
-          onEnded={handleVideoEnd}
+          onEnded={() => setCurrentIndex((prevIndex) => (prevIndex + 1) % videos.length)}
         />
       ) : (
         <div className="welcome-text">Welcome to Target Marketing</div>
